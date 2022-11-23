@@ -116,19 +116,20 @@ jobs:
             ./${{ steps.metadata.outputs.archive-checksum }}
           body: '
           A draft release has been created for your plugin. Please review and publish it.
-
+          <br>
           _Note: if this is the first release for your plugin please consult the ./README.md#distributing-your-plugin section_
+          <br>
+          If you would like to submit this release to Grafana please consider the following steps:
 
-          If you are looking to submit this release to Grafana please consider the following steps:
-
-          1. Check the Validate plugin step in the [release workflow run](https://github.com/${{github.repository}}/commit/${{github.sha}}/checks/${{github.run_id}})
-          2. Navigate to https://grafana.com/auth/sign-in/ to sign into your account
-          3. Once logged in click **My Plugins** in the admin navigation
-          4. Click the **Submit Plugin** button
-          5. Fill in the Create Plugin Submission form using the Plugin URL and MD5 urls attached to this release
-
-          Good luck 🚀
-
+          - Check the Validate plugin step in the [release workflow run](https://github.com/${{github.repository}}/commit/${{github.sha}}/checks/${{github.run_id}})
+          - Navigate to https://grafana.com/auth/sign-in/ to sign into your account
+          - Once logged in click **My Plugins** in the admin navigation
+          - Click the **Submit Plugin** button
+          - Fill in the Create Plugin Submission form:
+            - Plugin URL: paste the link to .zip asset attached to this release
+            - MD5: paste the link to .zip.md5 asset attached to this release
+          <br>
+          Once done feel free to the delete the above text related to submitting a plugin for review.
           '
 
       # - name: Create release
