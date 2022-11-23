@@ -106,16 +106,41 @@ jobs:
           popd
           plugincheck2 -config ./plugin-validator/config/default.yaml ${{ steps.metadata.outputs.archive }}
 
-#       - name: Create Github release
-#         uses: softprops/action-gh-release@v1
-#         with:
-#           draft: true
-#           generate_release_notes: true
-#           files: |
-#             ./${{ steps.metadata.outputs.archive }}
-#             ./${{ steps.metadata.outputs.archive-checksum }}
-#           body: '
-# A draft release has been created for your plugin. Please review and publish it.
+      #       - name: Create Github release
+      #         uses: softprops/action-gh-release@v1
+      #         with:
+      #           draft: true
+      #           generate_release_notes: true
+      #           files: |
+      #             ./${{ steps.metadata.outputs.archive }}
+      #             ./${{ steps.metadata.outputs.archive-checksum }}
+      #           body: '
+      # A draft release has been created for your plugin. Please review and publish it.
+
+      # _Note: if this is the first release for your plugin please consult the [distributing-your-plugin section](https://github.com/${{github.repository}}/blob/main/README.md#distributing-your-plugin) of the README_
+
+      # If you would like to submit this release to Grafana please consider the following steps:
+
+      # - Check the Validate plugin step in the [release workflow run](https://github.com/${{github.repository}}/commit/${{github.sha}}/checks/${{github.run_id}})
+      # - Navigate to https://grafana.com/auth/sign-in/ to sign into your account
+      # - Once logged in click **My Plugins** in the admin navigation
+      # - Click the **Submit Plugin** button
+      # - Paste the link to .zip asset attached to this release in the Plugin URL field
+      # - Paste the link to .zip.md5 asset attached to this release in the MD5 field
+
+      # Once done feel free to the delete the above text related to submitting a plugin for review.
+      # '
+
+      - name: Create Github release
+        uses: actions/github-script@v6.2.0
+        with:
+          script: |
+            await github.request(`POST /repos/${{ github.repository }}/releases`, {
+              tag_name: "${{ github.ref }}",
+              draft: true,
+              generate_release_notes: true
+              body: "A draft release has been created for your plugin. Please review and publish it.<br>"
+            });
 
 # _Note: if this is the first release for your plugin please consult the [distributing-your-plugin section](https://github.com/${{github.repository}}/blob/main/README.md#distributing-your-plugin) of the README_
 
@@ -129,69 +154,43 @@ jobs:
 # - Paste the link to .zip.md5 asset attached to this release in the MD5 field
 
 # Once done feel free to the delete the above text related to submitting a plugin for review.
-# '
+# `
 
-      - name: Create Github release
-        uses: actions/github-script@v6.2.0
-        with:
-          script: |
-            await github.request(`POST /repos/${{ github.repository }}/releases`, {
-              tag_name: "${{ github.ref }}",
-              draft: true,
-              generate_release_notes: true
-              body: `
-A draft release has been created for your plugin. Please review and publish it.
+# - name: Create release
+#   id: create_release
+#   uses: actions/create-release@v1
+#   env:
+#     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#   with:
+#     tag_name: ${{ github.ref }}
+#     release_name: Release ${{ github.ref }}
+#     body_path: ${{ steps.changelog.outputs.path }}
+#     draft: true
 
-_Note: if this is the first release for your plugin please consult the [distributing-your-plugin section](https://github.com/${{github.repository}}/blob/main/README.md#distributing-your-plugin) of the README_
+# - name: Add plugin to release
+#   id: upload-plugin-asset
+#   uses: actions/upload-release-asset@v1
+#   env:
+#     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#   with:
+#     upload_url: ${{ steps.create_release.outputs.upload_url }}
+#     asset_path: ./${{ steps.metadata.outputs.archive }}
+#     asset_name: ${{ steps.metadata.outputs.archive }}
+#     asset_content_type: application/zip
 
-If you would like to submit this release to Grafana please consider the following steps:
+# - name: Add checksum to release
+#   id: upload-checksum-asset
+#   uses: actions/upload-release-asset@v1
+#   env:
+#     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#   with:
+#     upload_url: ${{ steps.create_release.outputs.upload_url }}
+#     asset_path: ./${{ steps.metadata.outputs.archive-checksum }}
+#     asset_name: ${{ steps.metadata.outputs.archive-checksum }}
+#     asset_content_type: text/plain
 
-- Check the Validate plugin step in the [release workflow run](https://github.com/${{github.repository}}/commit/${{github.sha}}/checks/${{github.run_id}})
-- Navigate to https://grafana.com/auth/sign-in/ to sign into your account
-- Once logged in click **My Plugins** in the admin navigation
-- Click the **Submit Plugin** button
-- Paste the link to .zip asset attached to this release in the Plugin URL field
-- Paste the link to .zip.md5 asset attached to this release in the MD5 field
-
-Once done feel free to the delete the above text related to submitting a plugin for review.
-`
-            });
-
-      # - name: Create release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     body_path: ${{ steps.changelog.outputs.path }}
-      #     draft: true
-
-      # - name: Add plugin to release
-      #   id: upload-plugin-asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./${{ steps.metadata.outputs.archive }}
-      #     asset_name: ${{ steps.metadata.outputs.archive }}
-      #     asset_content_type: application/zip
-
-      # - name: Add checksum to release
-      #   id: upload-checksum-asset
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./${{ steps.metadata.outputs.archive-checksum }}
-      #     asset_name: ${{ steps.metadata.outputs.archive-checksum }}
-      #     asset_content_type: text/plain
-
-      # - name: Publish to Grafana.com
-      #   run: |
-      #     echo A draft release has been created for your plugin. Please review and publish it. Then submit your plugin to grafana.com/plugins by opening a PR to https://github.com/grafana/grafana-plugin-repository with the following entry:
-      #     echo
-      #     echo '{ "id": "${{ steps.metadata.outputs.plugin-id }}", "type": "${{ steps.metadata.outputs.plugin-type }}", "url": "https://github.com/${{ github.repository }}", "versions": [ { "version": "${{ steps.metadata.outputs.plugin-version }}", "commit": "${{ github.sha }}", "url": "https://github.com/${{ github.repository }}", "download": { "any": { "url": "https://github.com/${{ github.repository }}/releases/download/v${{ steps.metadata.outputs.plugin-version }}/${{ steps.metadata.outputs.archive }}", "md5": "${{ steps.package-plugin.outputs.checksum }}" } } } ] }' | jq .
+# - name: Publish to Grafana.com
+#   run: |
+#     echo A draft release has been created for your plugin. Please review and publish it. Then submit your plugin to grafana.com/plugins by opening a PR to https://github.com/grafana/grafana-plugin-repository with the following entry:
+#     echo
+#     echo '{ "id": "${{ steps.metadata.outputs.plugin-id }}", "type": "${{ steps.metadata.outputs.plugin-type }}", "url": "https://github.com/${{ github.repository }}", "versions": [ { "version": "${{ steps.metadata.outputs.plugin-version }}", "commit": "${{ github.sha }}", "url": "https://github.com/${{ github.repository }}", "download": { "any": { "url": "https://github.com/${{ github.repository }}/releases/download/v${{ steps.metadata.outputs.plugin-version }}/${{ steps.metadata.outputs.archive }}", "md5": "${{ steps.package-plugin.outputs.checksum }}" } } } ] }' | jq .
