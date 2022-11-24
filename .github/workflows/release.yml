@@ -122,10 +122,10 @@ jobs:
 
             If you would like to submit this release to Grafana please consider the following steps:
 
-            - Check the Validate plugin step in the [release workflow run](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}/jobs/${{github.job}})
+            - Check the Validate plugin step in the [release workflow](https://github.com/${{github.repository}}/commit/${{github.sha}}/checks/${{github.run_id}}) for any warnings that need attention
             - Navigate to https://grafana.com/auth/sign-in/ to sign into your account
             - Once logged in click **My Plugins** in the admin navigation
             - Click the **Submit Plugin** button
             - Fill in the Plugin Submission form:
-              - Paste this [.zip asset link](https://github.com/$\{{ github.repository }}/releases/download/v$\{{ steps.metadata.outputs.plugin-version }}/$\{{ steps.metadata.outputs.archive }}) in the Plugin URL field
-              - Paste this [.zip.md5 link](https://github.com/$\{{ github.repository }}/releases/download/v$\{{ steps.metadata.outputs.plugin-version }}/$\{{ steps.metadata.outputs.archive-checksum }}) in the MD5 field
+              - Paste this [.zip asset link](https://github.com/${{ github.repository }}/releases/download/v${{ steps.metadata.outputs.plugin-version }}/${{ steps.metadata.outputs.archive }}) in the Plugin URL field
+              - Paste this [.zip.md5 link](https://github.com/${{ github.repository }}/releases/download/v${{ steps.metadata.outputs.plugin-version }}/${{ steps.metadata.outputs.archive-checksum }}) in the MD5 field
