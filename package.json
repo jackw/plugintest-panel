@@ -1,6 +1,6 @@
 {
   "name": "plugin-test",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Grafana plugin testbed",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
