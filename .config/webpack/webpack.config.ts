@@ -117,7 +117,7 @@ const config = async (env): Promise<Configuration> => ({
         type: 'asset/resource',
         generator: {
           // Keep publicPath relative for host.com/grafana/ deployments
-          publicPath: `public/plugins/${pluginJson.id}/fonts`,
+          publicPath: `public/plugins/${pluginJson.id}/fonts/`,
           outputPath: 'fonts/',
           filename: Boolean(env.production) ? '[hash][ext]' : '[name][ext]',
         },
@@ -127,7 +127,7 @@ const config = async (env): Promise<Configuration> => ({
 
   output: {
     clean: {
-      keep: new RegExp(`.*?_(amd64|arm(64)?)(.exe)?`),
+      keep: new RegExp(`(.*?_(amd64|arm(64)?)(.exe)?|go_plugin_build_manifest)`),
     },
     filename: '[name].js',
     library: {
